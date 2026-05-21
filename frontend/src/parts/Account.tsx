@@ -19,6 +19,7 @@ import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { client } from "@/main";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 function Account() {
@@ -42,6 +43,8 @@ function Account() {
     checkLoggedInStatus();
   }, []);
 
+  const { t } = useTranslation();
+
   return (
     <>
       <Dialog
@@ -59,7 +62,7 @@ function Account() {
                 resolve2FARef.current = null;
               } else {
                 toast.error(
-                  "2FA callback not found. Please try logging in again.",
+                  "2FA callback not found",
                 );
               }
               setDialogOpen(false);
@@ -96,7 +99,7 @@ function Account() {
       </Dialog>
       <Card className="min-w-[min(100%,max(400px,35%))] flex-1">
         <CardHeader>
-          <CardTitle className="text-xl">1. Apple ID</CardTitle>
+          <CardTitle className="text-xl">{t("apple_id.title")}</CardTitle>
           <CardDescription>
             {loggedInAs ? "Logged in as" : "Login to your Apple account"}
           </CardDescription>

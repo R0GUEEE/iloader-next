@@ -11,16 +11,18 @@ import type { DeviceInfo } from "@/lib/client";
 import { client } from "@/main";
 import { CheckIcon, TabletSmartphone } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 function Devices() {
   const [devices, setDevices] = useState<DeviceInfo[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<DeviceInfo | null>(null);
+  const { t } = useTranslation();
 
   return (
     <Card className="grow flex flex-col min-w-[min(100%,max(400px,35%))] flex-2">
       <CardHeader>
-        <CardTitle className="text-xl">2. iDevice</CardTitle>
+        <CardTitle className="text-xl">{t("device.title")}</CardTitle>
         <CardDescription>Choose a device</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">
@@ -89,7 +91,7 @@ function Devices() {
             }
           }}
         >
-          Refresh
+          {t("common.refresh")}
         </Button>
       </CardFooter>
     </Card>
