@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import type { DeviceInfo } from "@/lib/client";
 import { client } from "@/main";
-import { CheckIcon } from "lucide-react";
+import { CheckIcon, TabletSmartphone } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -18,15 +18,25 @@ function Devices() {
   const [selectedDevice, setSelectedDevice] = useState<DeviceInfo | null>(null);
 
   return (
-    <Card className="flex-grow flex flex-col h-full">
+    <Card className="grow flex flex-col min-w-[min(100%,max(400px,35%))] flex-2">
       <CardHeader>
-        <CardTitle className="text-xl">iDevice</CardTitle>
+        <CardTitle className="text-xl">2. iDevice</CardTitle>
         <CardDescription>Choose a device</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="flex flex-col gap-2">
+      <CardContent className="flex-1 flex flex-col">
+        <div className="flex flex-col gap-2 flex-1">
           {devices.length === 0 && (
-            <div className="text-base">No devices found</div>
+            <div className="text-muted-foreground w-full flex-1 flex p-1 items-center justify-center gap-2 flex-col">
+              <div className="flex gap-2 items-center">
+                <TabletSmartphone />
+                <p className="text-muted-foreground">
+                  No devices found
+                </p>
+              </div>
+              <p className="text-muted-foreground">
+                Click refresh to get started
+              </p>
+            </div>
           )}
           {devices.map((device) => (
             <Button

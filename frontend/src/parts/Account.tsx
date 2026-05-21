@@ -94,16 +94,16 @@ function Account() {
           </form>
         </DialogContent>
       </Dialog>
-      <Card className="w-full md:w-[300px] lg:w-[500px] h-full">
+      <Card className="min-w-[min(100%,max(400px,35%))] flex-1">
         <CardHeader>
-          <CardTitle className="text-xl">Apple ID</CardTitle>
+          <CardTitle className="text-xl">1. Apple ID</CardTitle>
           <CardDescription>
             {loggedInAs ? "Logged in as" : "Login to your Apple account"}
           </CardDescription>
         </CardHeader>
         {loggedInAs ? (
           <>
-            <CardContent>
+            <CardContent className="h-full">
               <p className="text-base">{loggedInAs}</p>
             </CardContent>
             <CardFooter>
@@ -137,7 +137,7 @@ function Account() {
               });
             }}
           >
-            <CardContent>
+            <CardContent className="h-full">
               <FieldGroup>
                 <FieldSet>
                   <FieldGroup className="gap-4">
