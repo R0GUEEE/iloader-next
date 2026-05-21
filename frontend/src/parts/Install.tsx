@@ -24,7 +24,7 @@ function Install() {
         <CardDescription>Install SideStore on your device</CardDescription>
       </CardHeader>
       <CardContent className="h-full">
-        <Field className="w-full max-w-80">
+        <Field className="w-full">
           <FieldLabel>SideStore Variant</FieldLabel>
           <Select value={variant} onValueChange={(value) => setVariant(value as variant)}>
             <SelectTrigger>

@@ -1,3 +1,5 @@
+import type { TFunction } from "i18next";
+
 export const errorSuggestionKeys = {
     underage: ["error.suggestions.underage"],
     account_locked: ["error.suggestions.account_locked"],
@@ -64,66 +66,66 @@ const dedupeSuggestions = (suggestions: string[]) => {
     return [...new Set(suggestions)];
 };
 
-// const getSuggestionBlock = (
-//     t: TFunction,
-//     key: string,
-//     platform: "mac" | "windows" | "linux",
-//     anisetteServer: string,
-// ) => {
-//     const rawSuggestions = t(key, {
-//         returnObjects: true,
-//         defaultValue: [],
-//         anisetteServerUrl: normalizeAnisetteServer(anisetteServer),
-//     }) as unknown;
+const getSuggestionBlock = (
+    t: TFunction,
+    key: string,
+    platform: "mac" | "windows" | "linux",
+    anisetteServer: string,
+) => {
+    const rawSuggestions = t(key, {
+        returnObjects: true,
+        defaultValue: [],
+        anisetteServerUrl: normalizeAnisetteServer(anisetteServer),
+    }) as unknown;
 
-//     if (!Array.isArray(rawSuggestions)) {
-//         return [];
-//     }
+    if (!Array.isArray(rawSuggestions)) {
+        return [];
+    }
 
-//     return rawSuggestions
-//         .filter((suggestion): suggestion is string => {
-//             if (typeof suggestion !== "string") {
-//                 return false;
-//             }
-//             if (suggestion.startsWith("[platform::")) {
-//                 const platformEnd = suggestion.indexOf("]");
-//                 if (platformEnd !== -1) {
-//                     const suggestionPlatform = suggestion.substring(11, platformEnd);
-//                     console.log(
-//                         "suggestion platform:",
-//                         suggestionPlatform,
-//                         "current platform:",
-//                         platform,
-//                     );
-//                     if (suggestionPlatform === platform) {
-//                         return true;
-//                     }
-//                 }
-//                 return false;
-//             }
-//             return true;
-//         })
-//         .map((s) =>
-//             s
-//                 .replace(/^\[platform::.*?\]/, "")
-//                 // TODO: actually check ios version
-//                 .replace(/\[ios::.*?\]/g, "")
-//                 .trim(),
-//         );
-// };
+    return rawSuggestions
+        .filter((suggestion): suggestion is string => {
+            if (typeof suggestion !== "string") {
+                return false;
+            }
+            if (suggestion.startsWith("[platform::")) {
+                const platformEnd = suggestion.indexOf("]");
+                if (platformEnd !== -1) {
+                    const suggestionPlatform = suggestion.substring(11, platformEnd);
+                    console.log(
+                        "suggestion platform:",
+                        suggestionPlatform,
+                        "current platform:",
+                        platform,
+                    );
+                    if (suggestionPlatform === platform) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return true;
+        })
+        .map((s) =>
+            s
+                .replace(/^\[platform::.*?\]/, "")
+                // TODO: actually check ios version
+                .replace(/\[ios::.*?\]/g, "")
+                .trim(),
+        );
+};
 
-// export const getErrorSuggestions = (
-//     t: TFunction,
-//     type: ErrorVariant,
-//     platform: "mac" | "windows" | "linux",
-//     anisetteServer: string,
-// ): string[] => {
-//     return dedupeSuggestions(
-//         errorSuggestionKeys[type].flatMap((key) =>
-//             getSuggestionBlock(t, key, platform, anisetteServer),
-//         ),
-//     );
-// };
+export const getErrorSuggestions = (
+    t: TFunction,
+    type: ErrorVariant,
+    platform: "mac" | "windows" | "linux",
+    anisetteServer: string,
+): string[] => {
+    return dedupeSuggestions(
+        errorSuggestionKeys[type].flatMap((key) =>
+            getSuggestionBlock(t, key, platform, anisetteServer),
+        ),
+    );
+};
 
 export const parseLinkToken = (
     token: string,

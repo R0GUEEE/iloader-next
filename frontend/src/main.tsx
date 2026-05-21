@@ -5,6 +5,7 @@ import App from "./App.tsx";
 import { getClient } from "./lib/client.ts";
 import { Toaster } from "@/components/ui/sonner";
 import PlatformGate from "./PlatformGate.tsx";
+import { StoreProvider } from "./lib/StoreContext.tsx";
 
 export const client = await getClient();
 await client.init();
@@ -12,8 +13,10 @@ await client.init();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <PlatformGate>
-      <App />
-      <Toaster expand />
+      <StoreProvider>
+        <App />
+        <Toaster expand />
+      </StoreProvider>
     </PlatformGate>
   </StrictMode>,
 );
