@@ -32,8 +32,8 @@ function PlatformGate({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  windows = false;
-  webusb = true;
+  // windows = false;
+  // webusb = true;
   if (!webusb || windows) {
     return (
       <>
