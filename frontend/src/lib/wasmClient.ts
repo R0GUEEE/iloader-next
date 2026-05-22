@@ -3,6 +3,7 @@ import initWasm, {
   get_devices,
   login,
   logged_in_as,
+  install_app,
 } from "iloader-wasm";
 import type { DeviceInfo, iloaderAPI } from "./client";
 
@@ -39,5 +40,8 @@ export const wasmClient: iloaderAPI = {
       }
       resolve(result);
     });
+  },
+  installApp: function (): Promise<void> {
+    return install_app();
   },
 };

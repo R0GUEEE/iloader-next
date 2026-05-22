@@ -13,7 +13,6 @@ pub mod device;
 pub type ProviderMutex = Mutex<Option<UsbmuxdProvider>>;
 pub type SideloaderMutex = Mutex<Option<Sideloader>>;
 
-// macro use
 use device::get_devices;
 
 #[tauri::command]

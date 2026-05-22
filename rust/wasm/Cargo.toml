@@ -14,7 +14,8 @@ idevice.workspace = true
 js-sys = "0.3.97"
 netmuxd.workspace = true
 nusb.workspace = true
-isideload = { version = "0.2.22", path = "../../../isideload/isideload", default-features = false, features = ["wasm"] }
+isideload = { version = "0.3.0", default-features = false, features = ["wasm", "install"] } # , path = "../../../isideload/isideload" }
+isideload-vfs = { version = "0.0.1" } # , path = "../../../isideload-apple-platform-rs/isideload-vfs" }
 uuid = { version = "1", features = ["v4", "js"] }
 
 tokio = { version = "1", default-features = false, features = ["sync", "macros", "io-util"] }
@@ -28,6 +29,7 @@ getrandom_04 = { package = "getrandom", version = "0.4", default-features = fals
 ] }
 serde-wasm-bindgen = "0.6.5"
 rootcause = "0.12.1"
+zip = { version = "8.6.0", default-features = false, features = ["deflate"] }
 
 [dependencies.web-sys]
 version = "0.3"

@@ -61,9 +61,7 @@ function Account() {
                 resolve2FARef.current(twoFactorCode);
                 resolve2FARef.current = null;
               } else {
-                toast.error(
-                  "2FA callback not found",
-                );
+                toast.error("2FA callback not found");
               }
               setDialogOpen(false);
             }}
@@ -122,6 +120,7 @@ function Account() {
           </>
         ) : (
           <form
+            className="contents"
             onSubmit={(e) => {
               e.preventDefault();
               let promise = client.login(email, password, () => {

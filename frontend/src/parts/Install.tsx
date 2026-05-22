@@ -8,7 +8,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { client } from "@/main";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -26,7 +34,10 @@ function Install() {
       <CardContent className="h-full">
         <Field className="w-full">
           <FieldLabel>SideStore Variant</FieldLabel>
-          <Select value={variant} onValueChange={(value) => setVariant(value as variant)}>
+          <Select
+            value={variant}
+            onValueChange={(value) => setVariant(value as variant)}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Variant" />
             </SelectTrigger>
@@ -34,21 +45,26 @@ function Install() {
               <SelectGroup>
                 <SelectItem value="stable">SideStore Stable</SelectItem>
                 <SelectItem value="nightly">SideStore Nightly</SelectItem>
-                <SelectItem value="lcstable">LiveContainer+SideStore Stable</SelectItem>
-                <SelectItem value="lcnightly">LiveContainer+SideStore Nightly</SelectItem>
+                <SelectItem value="lcstable">
+                  LiveContainer+SideStore Stable
+                </SelectItem>
+                <SelectItem value="lcnightly">
+                  LiveContainer+SideStore Nightly
+                </SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
 
-          <FieldDescription>Only change this if you know what you are doing</FieldDescription>
+          <FieldDescription>
+            Only change this if you know what you are doing
+          </FieldDescription>
         </Field>
-
       </CardContent>
       <CardFooter className="flex gap-2">
         <Button onClick={() => toast("Not implemented yet")}>
           Install SideStore
         </Button>
-        <Button onClick={() => toast("Not implemented yet")} variant="outline">
+        <Button onClick={() => client.installApp()} variant="outline">
           Install .IPA
         </Button>
       </CardFooter>

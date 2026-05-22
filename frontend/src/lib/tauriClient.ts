@@ -58,4 +58,7 @@ export const tauriClient: iloaderAPI = {
   logged_in_as: async function (): Promise<string | null> {
     return invoke<string | null>("logged_in_as");
   },
+  installApp: function (): Promise<void> {
+    throw new Error("Function not implemented.");
+  },
 };

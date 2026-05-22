@@ -27,6 +27,6 @@ idevice = { version = "0.1.60", default-features = false, features = ["usbmuxd",
 tauri-plugin-shell = "2"
 tauri-plugin-opener = "2"
 futures = "0.3.32"
-isideload = { version = "0.2.22", path = "../../../isideload/isideload" }
+isideload = { version = "0.3.0" } # , path = "../../../isideload/isideload" }
 rustls = { version = "0.23.40", features = ["ring"] }
 tauri-plugin-store = "2"

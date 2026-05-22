@@ -2,7 +2,7 @@
   "name": "iloader-next",
   "private": true,
   "scripts": {
-    "dev": "bun run build:wasm && concurrently -c \"blue,green,magenta\" -n \"wasm,vite,tauri\" \"bun run dev:wasm\" \"bun run dev:web\" \"bun run dev:tauri\"",
+    "dev": "concurrently -c \"blue,green,magenta\" -n \"wasm,vite,tauri\" \"bun run dev:wasm\" \"bun run dev:web\" \"bun run dev:tauri\"",
     "build:wasm": "cd frontend && bun run wasm:build",
     "dev:wasm": "nodemon --watch rust/wasm/src --watch rust/iloader-core/src -e rs --exec \"cd frontend && bun run wasm:build\"",
     "dev:web": "cd frontend && bun run dev",
