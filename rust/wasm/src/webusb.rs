@@ -5,11 +5,14 @@ use idevice::pairing_file::PairingFile;
 use idevice::{IdeviceError, lockdown::LockdownClient};
 
 use iloader_core::error::AppError;
+use isideload::util::storage::SideloadingStorage;
 use netmuxd::usb::apple::{self, APPLE_VID};
 use netmuxd::usb::mux::UsbMuxHandle;
 use netmuxd::usb::provider::UsbMuxProvider;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{UsbDeviceFilter, UsbDeviceRequestOptions, console};
+
+use crate::local_storage::LocalStorage;
 
 thread_local! {
     static MUX: RefCell<Option<UsbMuxHandle>> = const { RefCell::new(None) };
@@ -24,9 +27,7 @@ pub async fn get_webusb_provider(label: &str) -> Result<UsbMuxProvider, AppError
     connect_iphone().await.map_err(AppError::WebUSB)?;
 
     let handle = get_mux().map_err(AppError::WebUSB)?;
-    let pairing = pair_device(&handle, label)
-        .await
-        .map_err(AppError::WebUSB)?;
+    let pairing = get_pairing_or_pair(&handle, label).await?;
 
     Ok(UsbMuxProvider::new(handle, pairing, label.to_string()))
 }
@@ -101,10 +102,32 @@ async fn open_lockdown(handle: &UsbMuxHandle, label: &str) -> Result<LockdownCli
     Ok(LockdownClient::new(idevice))
 }
 
-async fn pair_device(handle: &UsbMuxHandle, label: &str) -> Result<PairingFile, String> {
-    let mut lockdown = open_lockdown(handle, label)
-        .await
-        .map_err(|e| format!("Failed to open lockdown: {e:?}"))?;
+async fn get_pairing_or_pair(handle: &UsbMuxHandle, label: &str) -> Result<PairingFile, AppError> {
+    let local_storage = LocalStorage::new()?;
+    let pairing_key = format!("pairing-{}", label);
+    if let Some(pairing_bytes) = local_storage.retrieve_data(&pairing_key)? {
+        console::log_1(&"Found existing pairing in local storage. Using it…".into());
+        let pairing = PairingFile::from_bytes(&pairing_bytes);
+        if let Ok(pairing) = pairing {
+            return Ok(pairing);
+        } else {
+            console::warn_1(&"Failed to parse existing pairing. Pairing again…".into());
+        }
+    }
+    console::log_1(&"No existing pairing found.".into());
+    let pairing = pair_device(handle, label).await?;
+    let pairing_bytes = pairing
+        .clone()
+        .serialize()
+        .map_err(|e| AppError::Misc(format!("Failed to serialize pairing: {e}")))?;
+    local_storage.store_data(&pairing_key, &pairing_bytes)?;
+    Ok(pairing)
+}
+
+async fn pair_device(handle: &UsbMuxHandle, label: &str) -> Result<PairingFile, AppError> {
+    let mut lockdown = open_lockdown(handle, label).await.map_err(|e| {
+        AppError::DeviceComsWithMessage("Unable to connect to lockdown".into(), e.to_string())
+    })?;
 
     let host_id = uuid::Uuid::new_v4().to_string().to_uppercase();
     let system_buid = uuid::Uuid::new_v4().to_string().to_uppercase();
@@ -114,7 +137,7 @@ async fn pair_device(handle: &UsbMuxHandle, label: &str) -> Result<PairingFile, 
     let pairing_file = lockdown
         .pair(host_id, system_buid, None)
         .await
-        .map_err(|e| format!("pair: {e:?}"))?;
+        .map_err(|e| AppError::DeviceComsWithMessage("Failed to pair".into(), e.to_string()))?;
     console::log_1(&"Pair succeeded.".into());
 
     Ok(pairing_file)
