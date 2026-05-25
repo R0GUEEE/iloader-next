@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import logo from "../assets/iloader.svg";
-import { client } from "@/main";
+import { client } from "@/App";
 import { ExternalLinkIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

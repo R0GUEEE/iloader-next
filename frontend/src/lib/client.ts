@@ -5,7 +5,7 @@ export type DeviceInfo = {
   version: string;
 };
 
-export type Account = {
+export type AccountInfo = {
   email: string;
   first_name: string;
   last_name: string;
@@ -21,7 +21,7 @@ export interface iloaderAPI {
     password: string,
     get2FA: () => Promise<string>,
   ): Promise<void>;
-  logged_in_as(): Promise<Account | null>;
+  logged_in_as(): Promise<AccountInfo | null>;
   installApp(): Promise<void>;
 
   listen<T>(event: string, callback: (data: T) => void): Promise<() => void>;

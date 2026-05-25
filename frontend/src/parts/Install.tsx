@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { client } from "@/main";
+import { client } from "@/App";
 import { useState } from "react";
 import { toast } from "sonner";
 

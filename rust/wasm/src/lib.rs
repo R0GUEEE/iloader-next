@@ -212,7 +212,7 @@ pub async fn install_app() -> Result<(), WasmError> {
     let first_file = file_list
         .get(0)
         .ok_or_else(|| AppError::Misc("No file selected".into()))?;
-    let file_name = first_file.name();
+
     let array_buffer = JsFuture::from(first_file.array_buffer())
         .await
         .map_err(|e| AppError::Misc(format!("Failed to read file as array buffer: {e:?}")))?;

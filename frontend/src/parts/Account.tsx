@@ -17,11 +17,11 @@ import {
 } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { client } from "@/main";
+import { client } from "@/App";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import type { Account } from "@/lib/client";
+import type { AccountInfo } from "@/lib/client";
 
 function Account() {
   const [email, setEmail] = useState("");
@@ -29,7 +29,7 @@ function Account() {
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const resolve2FARef = useRef<((code: string) => void) | null>(null);
-  const [loggedInAs, setLoggedInAs] = useState<Account | null>(null);
+  const [loggedInAs, setLoggedInAs] = useState<AccountInfo | null>(null);
 
   const checkLoggedInStatus = async () => {
     try {

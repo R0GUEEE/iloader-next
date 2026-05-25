@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from "react";
-import { client } from "./main";
+import { client } from "./App";
 
 export interface ExtendedLogRecord {
   level: number;
@@ -38,6 +38,25 @@ export const LogProvider: React.FC<{ children: React.ReactNode }> = ({
         unlistenRef.current = await client.listen<ExtendedLogRecord>(
           "log-record",
           (event) => {
+            switch (event.level) {
+              case LogLevel.Trace:
+                console.debug(event.message);
+                break;
+              case LogLevel.Debug:
+                console.debug(event.message);
+                break;
+              case LogLevel.Info:
+                console.info(event.message);
+                break;
+              case LogLevel.Warn:
+                console.warn(event.message);
+                break;
+              case LogLevel.Error:
+                console.error(event.message);
+                break;
+              default:
+                console.log(event.message);
+            }
             setLogs((prevLogs) => [...prevLogs, event]);
           },
         );

@@ -5,7 +5,7 @@ import initWasm, {
   logged_in_as,
   install_app,
 } from "iloader-wasm";
-import type { Account, DeviceInfo, iloaderAPI } from "./client";
+import type { AccountInfo, DeviceInfo, iloaderAPI } from "./client";
 
 export const wasmClient: iloaderAPI = {
   async init() {
@@ -31,7 +31,7 @@ export const wasmClient: iloaderAPI = {
   ): Promise<void> {
     return login(email, password, get2FA);
   },
-  logged_in_as: async function (): Promise<Account | null> {
+  logged_in_as: async function (): Promise<AccountInfo | null> {
     return new Promise(async (resolve) => {
       const result = await logged_in_as();
       if (result === undefined) {

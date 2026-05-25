@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { DeviceInfo } from "@/lib/client";
-import { client } from "@/main";
+import { client } from "@/App";
 import { CheckIcon, TabletSmartphone } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

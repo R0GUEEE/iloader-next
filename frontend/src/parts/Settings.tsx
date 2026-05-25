@@ -7,6 +7,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import {
   Select,
@@ -18,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import i18n, { sortedLanguages } from "@/i18next";
 import { useStore } from "@/lib/StoreContext";
-import { client } from "@/main";
+import { client } from "@/App";
 import { useEffect } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -85,6 +93,17 @@ function Settings() {
         <Button onClick={() => toast("Not implemented yet")}>
           Pairing File
         </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button>{t("settings.view_logs")}</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t("settings.logs")}</DialogTitle>
+              <DialogDescription>WIP</DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </CardFooter>
     </Card>
   );

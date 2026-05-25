@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
-import { client } from "./main";
+import { client } from "./App";
 import Header from "./parts/Header";
 import {
   Dialog,
