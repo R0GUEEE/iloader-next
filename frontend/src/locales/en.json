@@ -288,6 +288,9 @@
     "device": {
       "description": "Choose a device",
       "get_started": "Click refresh to get started"
+    },
+    "settings": {
+      "logs_description": "View application logs"
     }
   }
 }

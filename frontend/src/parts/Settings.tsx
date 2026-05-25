@@ -27,18 +27,43 @@ import {
 import i18n, { sortedLanguages } from "@/i18next";
 import { useStore } from "@/lib/StoreContext";
 import { client } from "@/App";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { LogLevel, useLogs } from "@/LogContext";
+import { Virtuoso } from "react-virtuoso";
 
 function Settings() {
   const [lang, setLang] = useStore<string>("lang", "en");
+  const [logLevel, setLogLevel] = useStore<string>(
+    "logLevel",
+    String(LogLevel.Info),
+  );
 
   useEffect(() => {
     i18n.changeLanguage(lang);
   }, [lang]);
 
   const { t } = useTranslation();
+
+  const logLevelOptions = useMemo(
+    () => [
+      // { value: String(LogLevel.Trace), label: "Trace" },
+      [String(LogLevel.Debug), t("settings.debug")],
+      [String(LogLevel.Info), t("settings.info")],
+      [String(LogLevel.Warn), t("settings.warn")],
+      [String(LogLevel.Error), t("settings.error")],
+    ],
+    [t],
+  );
+
+  const logs = useLogs();
+
+  const filteredLogs = useMemo(() => {
+    return logs.filter((log) => {
+      return log.level >= Number(logLevel);
+    });
+  }, [logs, logLevel]);
 
   return (
     <Card className="grow flex flex-col min-w-[min(100%,max(400px,35%))]">
@@ -85,23 +110,71 @@ function Settings() {
       </CardContent>
       <CardFooter className="flex gap-2 flex-wrap">
         <Button onClick={() => toast("Not implemented yet")}>
-          Manage Certificates
+          {t("certificates.manage")}
         </Button>
         <Button onClick={() => toast("Not implemented yet")}>
-          View App IDs
+          {t("app_ids.manage")}
         </Button>
         <Button onClick={() => toast("Not implemented yet")}>
-          Pairing File
+          {t("pairing.manage")}
         </Button>
         <Dialog>
           <DialogTrigger asChild>
             <Button>{t("settings.view_logs")}</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="min-w-[min(90vw,1000px)] min-h-[85vh] md:min-h-[65vh] flex flex-col">
             <DialogHeader>
               <DialogTitle>{t("settings.logs")}</DialogTitle>
-              <DialogDescription>WIP</DialogDescription>
+              <DialogDescription>
+                {t("next.settings.logs_description")}
+              </DialogDescription>
             </DialogHeader>
+            <div className="flex flex-col h-full grow">
+              <Field className="w-full">
+                <FieldLabel>{t("settings.log_level")}</FieldLabel>
+                <Select
+                  value={logLevel}
+                  onValueChange={(value) => setLogLevel(value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t("settings.log_level")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {logLevelOptions.map(([value, label]) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+              {filteredLogs.length > 0 ? (
+                <Virtuoso
+                  className="bg-black/80 font-mono rounded-sm border border-border mt-4 grow h-full select-text whitespace-nowrap"
+                  data={filteredLogs}
+                  followOutput="smooth"
+                  initialTopMostItemIndex={filteredLogs.length - 1}
+                  itemContent={(_index, log) => (
+                    <div>
+                      <span className="text-gray-600">[{log.timestamp}]</span>{" "}
+                      {getHtmlForLevel(log.level)}{" "}
+                      {log.target ? (
+                        <span className="text-gray-400">{log.target}</span>
+                      ) : (
+                        ""
+                      )}{" "}
+                      {log.message}
+                    </div>
+                  )}
+                />
+              ) : (
+                <pre className="bg-black/80 font-mono rounded-sm border border-border mt-4 grow h-full select-text whitespace-nowrap">
+                  <div>{t("settings.no_logs_yet")}</div>
+                </pre>
+              )}
+            </div>
           </DialogContent>
         </Dialog>
       </CardFooter>
@@ -109,3 +182,20 @@ function Settings() {
   );
 }
 export default Settings;
+
+function getHtmlForLevel(level: LogLevel) {
+  switch (level) {
+    case LogLevel.Trace:
+      return <span className="text-purple-500">[TRACE]</span>;
+    case LogLevel.Debug:
+      return <span className="text-blue-500">[DEBUG]</span>;
+    case LogLevel.Info:
+      return <span className="text-green-500">[INFO]</span>;
+    case LogLevel.Warn:
+      return <span className="text-orange-500">[WARN]</span>;
+    case LogLevel.Error:
+      return <span className="text-red-500">[ERROR]</span>;
+    default:
+      return <span className="text-gray-500">[UNKNOWN]</span>;
+  }
+}
