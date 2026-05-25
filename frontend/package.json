@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --port 5173",
     "build": "tsc && vite build",
-    "wasm:build": "wasm-pack build ../rust/wasm --out-dir ../../frontend/wasm --target web --out-name iloader",
+    "wasm:build": "wasm-pack build --dev ../rust/wasm --out-dir ../../frontend/wasm --target web --out-name iloader",
     "tauri:dev": "cargo tauri dev --additional-watch-folders ../rust/iloader-core/src",
     "tauri:build": "cargo tauri build"
   },

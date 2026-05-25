@@ -9,6 +9,7 @@ use std::{
 
 use idevice::{IdeviceService, lockdown::LockdownClient};
 use iloader_core::{
+    account::Account,
     device::{ConnectionType, DeviceInfo},
     error::{AppError, WasmError},
     read_lockdown_values,
@@ -27,7 +28,7 @@ use web_sys::console;
 use crate::{local_storage::LocalStorage, webusb::get_webusb_provider};
 
 static IDEVICE: OnceLock<Mutex<Option<UsbMuxProvider>>> = OnceLock::new();
-static SIDELOADER: OnceLock<Mutex<Option<Sideloader>>> = OnceLock::new();
+static SIDELOADER: OnceLock<Mutex<Option<(Sideloader, Account)>>> = OnceLock::new();
 
 #[wasm_bindgen(start)]
 pub fn main() {
@@ -143,17 +144,17 @@ pub async fn login(
         .build();
 
     let sideloader_mutex = SIDELOADER.get_or_init(|| Mutex::new(None));
-    *sideloader_mutex.lock().unwrap() = Some(sideloader);
+    *sideloader_mutex.lock().unwrap() = Some((sideloader, Account::from_account(&account)?));
 
     Ok(())
 }
 
 #[wasm_bindgen]
-pub async fn logged_in_as() -> Result<Option<String>, WasmError> {
+pub async fn logged_in_as() -> Result<Option<Account>, WasmError> {
     let sideloader_mutex = SIDELOADER.get_or_init(|| Mutex::new(None));
     let sideloader = sideloader_mutex.lock().unwrap();
-    if let Some(sideloader) = sideloader.as_ref() {
-        Ok(Some(sideloader.get_email().into()))
+    if let Some((_, account)) = sideloader.as_ref() {
+        Ok(Some(account.clone()))
     } else {
         Ok(None)
     }
@@ -163,7 +164,7 @@ pub async fn logged_in_as() -> Result<Option<String>, WasmError> {
 pub async fn install_app() -> Result<(), WasmError> {
     let sideloader_mutex = SIDELOADER.get_or_init(|| Mutex::new(None));
     let mut sideloader_lock = sideloader_mutex.lock().unwrap();
-    let sideloader = sideloader_lock
+    let (sideloader, _) = sideloader_lock
         .as_mut()
         .ok_or_else(|| AppError::Misc("Not logged in".into()))?;
 
@@ -175,7 +176,6 @@ pub async fn install_app() -> Result<(), WasmError> {
         .as_ref()
         .ok_or_else(|| AppError::Misc("No device provider available".into()))?;
 
-    // request an IPA file upload from the user then use isideload_vfs::fs::write to "upload" it to the in-memory VFS at "/targetapp.ipa"
     let file = web_sys::window()
         .ok_or_else(|| AppError::Misc("No window object".into()))?
         .document()

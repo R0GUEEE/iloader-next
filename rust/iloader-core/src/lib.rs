@@ -2,6 +2,7 @@ use idevice::{IdeviceService, lockdown::LockdownClient, provider::IdeviceProvide
 
 use crate::error::AppError;
 
+pub mod account;
 pub mod device;
 pub mod error;
 

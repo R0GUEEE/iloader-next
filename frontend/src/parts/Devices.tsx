@@ -23,7 +23,7 @@ function Devices() {
     <Card className="grow flex flex-col min-w-[min(100%,max(400px,35%))] flex-2">
       <CardHeader>
         <CardTitle className="text-xl">{t("device.title")}</CardTitle>
-        <CardDescription>Choose a device</CardDescription>
+        <CardDescription>{t("next.device.description")}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">
         <div className="flex flex-col gap-2 flex-1">
@@ -32,21 +32,24 @@ function Devices() {
               <div className="flex gap-2 items-center">
                 <TabletSmartphone />
                 <p className="text-muted-foreground">
-                  No devices found
+                  {t("device.no_devices_found")}
                 </p>
               </div>
               <p className="text-muted-foreground">
-                Click refresh to get started
+                {t("next.device.get_started")}
               </p>
             </div>
           )}
           {devices.map((device) => (
             <Button
               key={device.udid}
-              variant={
-                device.udid === selectedDevice?.udid ? "default" : "outline"
+              variant="outline"
+              className={
+                "h-auto w-full justify-start p-3" +
+                (device.udid === selectedDevice?.udid
+                  ? " border border-primary"
+                  : "")
               }
-              className="h-auto w-full justify-start p-3"
               onClick={() => setSelectedDevice(device)}
             >
               {device.udid === selectedDevice?.udid && (

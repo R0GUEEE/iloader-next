@@ -1,7 +1,7 @@
 use std::{sync::Mutex, time::Duration};
 
 use idevice::provider::UsbmuxdProvider;
-use iloader_core::{error::AppError, read_lockdown_values};
+use iloader_core::{account::Account, error::AppError, read_lockdown_values};
 use isideload::{
     auth::builder::AppleAccountBuilder,
     dev::developer_session::DeveloperSession,
@@ -11,7 +11,7 @@ use tauri::{Emitter, Listener, Manager, State};
 
 pub mod device;
 pub type ProviderMutex = Mutex<Option<UsbmuxdProvider>>;
-pub type SideloaderMutex = Mutex<Option<Sideloader>>;
+pub type SideloaderMutex = Mutex<Option<(Sideloader, Account)>>;
 
 use device::get_devices;
 
@@ -72,7 +72,7 @@ async fn login(
         // .max_certs_behavior(MaxCertsBehavior::Prompt(Box::new(max_certs_callback)))
         .build();
 
-    *sideloader_state.lock().unwrap() = Some(sideloader);
+    *sideloader_state.lock().unwrap() = Some((sideloader, Account::from_account(&account)?));
 
     Ok(())
 }
@@ -80,9 +80,9 @@ async fn login(
 #[tauri::command]
 async fn logged_in_as(
     sideloader_state: State<'_, SideloaderMutex>,
-) -> Result<Option<String>, AppError> {
+) -> Result<Option<Account>, AppError> {
     let sideloader_lock = sideloader_state.lock().unwrap();
-    Ok(sideloader_lock.as_ref().map(|s| s.get_email().to_string()))
+    Ok(sideloader_lock.as_ref().map(|(_, account)| account.clone()))
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

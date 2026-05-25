@@ -21,6 +21,7 @@ import { client } from "@/main";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import type { Account } from "@/lib/client";
 
 function Account() {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ function Account() {
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const resolve2FARef = useRef<((code: string) => void) | null>(null);
-  const [loggedInAs, setLoggedInAs] = useState<string | null>(null);
+  const [loggedInAs, setLoggedInAs] = useState<Account | null>(null);
 
   const checkLoggedInStatus = async () => {
     try {
@@ -67,9 +68,9 @@ function Account() {
             }}
           >
             <DialogHeader>
-              <DialogTitle>Two-Factor Authentication</DialogTitle>
+              <DialogTitle>{t("apple_id.two_factor_title")}</DialogTitle>
               <DialogDescription>
-                Enter the 2FA code sent to your trusted devices or phone number.
+                {t("apple_id.two_factor_prompt")}
               </DialogDescription>
             </DialogHeader>
             <FieldSet className="mb-4 mt-3">
@@ -89,7 +90,7 @@ function Account() {
             </FieldSet>
             <DialogFooter>
               <Field>
-                <Button type="submit">Submit</Button>
+                <Button type="submit">{t("apple_id.submit")}</Button>
               </Field>
             </DialogFooter>
           </form>
@@ -98,14 +99,26 @@ function Account() {
       <Card className="min-w-[min(100%,max(400px,35%))] flex-1">
         <CardHeader>
           <CardTitle className="text-xl">{t("apple_id.title")}</CardTitle>
-          <CardDescription>
-            {loggedInAs ? "Logged in as" : "Login to your Apple account"}
-          </CardDescription>
+
+          <CardDescription>{t("next.apple_id.description")}</CardDescription>
         </CardHeader>
         {loggedInAs ? (
           <>
             <CardContent className="h-full">
-              <p className="text-base">{loggedInAs}</p>
+              <div className="flex items-center gap-4 border rounded-md bg-secondary p-3">
+                <div className="flex flex-col items-start">
+                  <div className="text-xs font-normal text-muted-foreground">
+                    {t("apple_id.logged_in_as")}
+                  </div>
+                  <div className="text-base">
+                    {loggedInAs.first_name} {loggedInAs.last_name}
+                  </div>
+                </div>
+
+                <div className="ml-auto flex flex-col items-end text-sm font-normal text-muted-foreground">
+                  <div>{loggedInAs.email}</div>
+                </div>
+              </div>
             </CardContent>
             <CardFooter>
               <Button
@@ -114,7 +127,7 @@ function Account() {
                   alert("todo");
                 }}
               >
-                Logout
+                {t("apple_id.sign_out")}
               </Button>
             </CardFooter>
           </>
@@ -130,8 +143,8 @@ function Account() {
                 });
               });
               toast.promise(promise, {
-                loading: "Logging in...",
-                success: "Logged in successfully!",
+                loading: t("apple_id.logging_in"),
+                success: t("apple_id.logged_in_success"),
                 error: (e) => e,
               });
               promise.then(() => {
@@ -145,7 +158,7 @@ function Account() {
                   <FieldGroup className="gap-4">
                     <Field>
                       <FieldLabel htmlFor="account-email">
-                        Apple ID Email
+                        {t("next.apple_id.email_label")}
                       </FieldLabel>
                       <Input
                         id="account-email"
@@ -158,11 +171,11 @@ function Account() {
                     </Field>
                     <Field className="mb-5">
                       <FieldLabel htmlFor="account-password">
-                        Password
+                        {t("next.apple_id.password_label")}
                       </FieldLabel>
                       <Input
                         id="account-password"
-                        placeholder="Apple ID password..."
+                        placeholder="••••••••"
                         type="password"
                         required
                         value={password}
@@ -175,7 +188,7 @@ function Account() {
             </CardContent>
             <CardFooter>
               <Button type="submit" className="w-fit">
-                Login
+                {t("apple_id.login")}
               </Button>
             </CardFooter>
           </form>

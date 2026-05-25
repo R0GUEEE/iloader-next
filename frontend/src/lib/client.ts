@@ -5,6 +5,12 @@ export type DeviceInfo = {
   version: string;
 };
 
+export type Account = {
+  email: string;
+  first_name: string;
+  last_name: string;
+};
+
 export interface iloaderAPI {
   init(): Promise<void>;
   openUrl(url: string): Promise<void>;
@@ -15,7 +21,7 @@ export interface iloaderAPI {
     password: string,
     get2FA: () => Promise<string>,
   ): Promise<void>;
-  logged_in_as(): Promise<string | null>;
+  logged_in_as(): Promise<Account | null>;
   installApp(): Promise<void>;
 }
 

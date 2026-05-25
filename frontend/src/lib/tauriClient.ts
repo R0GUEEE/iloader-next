@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { DeviceInfo, iloaderAPI } from "./client";
+import type { Account, DeviceInfo, iloaderAPI } from "./client";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import type { AppError } from "./error";
 import { toast } from "sonner";
@@ -55,8 +55,10 @@ export const tauriClient: iloaderAPI = {
       resolve();
     });
   },
-  logged_in_as: async function (): Promise<string | null> {
-    return invoke<string | null>("logged_in_as");
+  logged_in_as: async function (): Promise<Account | null> {
+    let account = await invoke<Account | null>("logged_in_as");
+    console.log("Logged in as:", account);
+    return account;
   },
   installApp: function (): Promise<void> {
     throw new Error("Function not implemented.");
