@@ -23,6 +23,8 @@ export interface iloaderAPI {
   ): Promise<void>;
   logged_in_as(): Promise<Account | null>;
   installApp(): Promise<void>;
+
+  listen<T>(event: string, callback: (data: T) => void): Promise<() => void>;
 }
 
 let clientInstance: iloaderAPI | null = null;

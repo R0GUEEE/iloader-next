@@ -1,4 +1,5 @@
 mod local_storage;
+mod logging;
 mod webusb;
 
 use std::{
@@ -21,6 +22,7 @@ use isideload::{
     sideload::{SideloaderBuilder, sideloader::Sideloader},
 };
 use netmuxd::usb::provider::UsbMuxProvider;
+use tracing_subscriber::{Layer, Registry, layer::SubscriberExt, util::SubscriberInitExt};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::console;
@@ -35,6 +37,11 @@ pub fn main() {
     console_error_panic_hook::set_once();
     let _ = isideload::init();
     isideload_vfs::set_vfs(Box::new(isideload_vfs::memory::MemoryVfs::new()));
+
+    let wasm_layer =
+        (logging::WasmLoggingLayer {}).with_filter(tracing_subscriber::filter::LevelFilter::DEBUG);
+
+    Registry::default().with(wasm_layer).init();
 }
 
 #[wasm_bindgen]
@@ -134,7 +141,6 @@ pub async fn login(
             value.as_string()
         })
         .await?;
-    console::log_1(&format!("Logged in as {}", account.email).into());
     let dev_session = DeveloperSession::from_account(&mut account).await?;
 
     let sideloader = SideloaderBuilder::new(dev_session, email.to_lowercase())
@@ -207,17 +213,14 @@ pub async fn install_app() -> Result<(), WasmError> {
         .get(0)
         .ok_or_else(|| AppError::Misc("No file selected".into()))?;
     let file_name = first_file.name();
-    console::log_1(&format!("Selected file: {}", file_name).into());
     let array_buffer = JsFuture::from(first_file.array_buffer())
         .await
         .map_err(|e| AppError::Misc(format!("Failed to read file as array buffer: {e:?}")))?;
     let uint8_array = js_sys::Uint8Array::new(&array_buffer);
     let mut buffer = vec![0; uint8_array.length() as usize];
     uint8_array.copy_to(&mut buffer);
-    console::log_1(&format!("Read file into buffer, size: {} bytes", buffer.len()).into());
 
     let path = extract_ipa_to_vfs(&buffer, "/")?;
-    console::log_1(&format!("Extracted IPA to VFS at path: {}", path.display()).into());
 
     sideloader.install_app(device_provider, path, false).await?;
 
@@ -228,8 +231,6 @@ fn extract_ipa_to_vfs(buffer: &[u8], dest_dir: &str) -> Result<PathBuf, AppError
     let cursor = Cursor::new(buffer);
     let mut archive = zip::ZipArchive::new(cursor)
         .map_err(|e| AppError::Misc(format!("Failed to open zip: {e:?}")))?;
-
-    console::log_1(&format!("Extracting {} files to {}...", archive.len(), dest_dir).into());
 
     let dest_path = PathBuf::from(dest_dir);
     let mut app_path = None;

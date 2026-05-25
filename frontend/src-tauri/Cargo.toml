@@ -30,3 +30,6 @@ futures = "0.3.32"
 isideload = { version = "0.3.0" } # , path = "../../../isideload/isideload" }
 rustls = { version = "0.23.40", features = ["ring"] }
 tauri-plugin-store = "2"
+tracing.workspace = true
+tracing-subscriber.workspace = true
+tracing-appender = "0.2.5"

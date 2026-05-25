@@ -63,4 +63,15 @@ export const tauriClient: iloaderAPI = {
   installApp: function (): Promise<void> {
     throw new Error("Function not implemented.");
   },
+  listen: function <T>(
+    event: string,
+    callback: (data: T) => void,
+  ): Promise<() => void> {
+    return new Promise(async (resolve) => {
+      const unlisten = await listen<T>(event, (e) => {
+        callback(e.payload);
+      });
+      resolve(unlisten);
+    });
+  },
 };

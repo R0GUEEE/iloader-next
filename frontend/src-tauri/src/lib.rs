@@ -10,10 +10,12 @@ use isideload::{
 use tauri::{Emitter, Listener, Manager, State};
 
 pub mod device;
+pub mod logging;
 pub type ProviderMutex = Mutex<Option<UsbmuxdProvider>>;
 pub type SideloaderMutex = Mutex<Option<(Sideloader, Account)>>;
 
 use device::get_devices;
+use tracing_subscriber::{Layer, Registry, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tauri::command]
 async fn read_lockdown(device_state: State<'_, ProviderMutex>) -> Result<String, AppError> {
@@ -94,6 +96,37 @@ pub fn run() {
         .setup(|app| {
             app.manage(ProviderMutex::new(None));
             app.manage(SideloaderMutex::new(None));
+
+            let log_dir = app
+                .path()
+                .app_data_dir()
+                .expect("failed to get app data dir")
+                .join("logs");
+
+            std::fs::create_dir_all(&log_dir).ok();
+
+            let file_appender = tracing_appender::rolling::RollingFileAppender::builder()
+                .rotation(tracing_appender::rolling::Rotation::DAILY)
+                .filename_prefix("iloader")
+                .filename_suffix("log")
+                .max_log_files(2)
+                .build(&log_dir)
+                .expect("failed to create log file appender");
+
+            let file_layer = fmt::layer()
+                .with_writer(file_appender)
+                .with_target(true)
+                .with_ansi(false)
+                .with_filter(tracing_subscriber::filter::LevelFilter::DEBUG);
+
+            let tauri_layer = logging::TauriLoggingLayer::new(app.handle().clone())
+                .with_filter(tracing_subscriber::filter::LevelFilter::DEBUG);
+
+            Registry::default()
+                .with(file_layer)
+                .with(tauri_layer)
+                .init();
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

@@ -5,6 +5,7 @@ use crate::error::AppError;
 pub mod account;
 pub mod device;
 pub mod error;
+pub mod logging;
 
 pub async fn read_lockdown_values(provider: &dyn IdeviceProvider) -> Result<String, AppError> {
     let mut lockdown = LockdownClient::connect(provider).await.map_err(|e| {

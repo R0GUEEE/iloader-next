@@ -44,4 +44,20 @@ export const wasmClient: iloaderAPI = {
   installApp: function (): Promise<void> {
     return install_app();
   },
+  listen: function <T>(
+    event: string,
+    callback: (data: T) => void,
+  ): Promise<() => void> {
+    return new Promise((resolve) => {
+      const handler = (e: CustomEvent) => {
+        if (e.type === event) {
+          callback(e.detail as T);
+        }
+      };
+      window.addEventListener(event, handler as EventListener);
+      resolve(() =>
+        window.removeEventListener(event, handler as EventListener),
+      );
+    });
+  },
 };
