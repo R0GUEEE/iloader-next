@@ -1,7 +1,7 @@
 use std::{sync::Mutex, time::Duration};
 
 use idevice::provider::UsbmuxdProvider;
-use iloader_core::{account::Account, error::AppError, read_lockdown_values};
+use iloader_core::{account::Account, error::AppError};
 use isideload::{
     auth::builder::AppleAccountBuilder,
     dev::developer_session::DeveloperSession,
@@ -11,24 +11,12 @@ use tauri::{Emitter, Listener, Manager, State};
 
 pub mod device;
 pub mod logging;
+mod operation;
 pub type ProviderMutex = Mutex<Option<UsbmuxdProvider>>;
 pub type SideloaderMutex = Mutex<Option<(Sideloader, Account)>>;
 
 use device::get_devices;
 use tracing_subscriber::{Layer, Registry, fmt, layer::SubscriberExt, util::SubscriberInitExt};
-
-#[tauri::command]
-async fn read_lockdown(device_state: State<'_, ProviderMutex>) -> Result<String, AppError> {
-    let provider = {
-        let device_lock = device_state.lock().unwrap();
-        match &*device_lock {
-            Some(d) => d.clone(),
-            None => return Err(AppError::NoDeviceSelected),
-        }
-    };
-
-    read_lockdown_values(&provider).await
-}
 
 #[tauri::command]
 async fn login(
@@ -129,12 +117,7 @@ pub fn run() {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![
-            get_devices,
-            read_lockdown,
-            login,
-            logged_in_as
-        ])
+        .invoke_handler(tauri::generate_handler![get_devices, login, logged_in_as])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -109,6 +109,14 @@ impl From<Report> for AppError {
                     _ => {}
                 }
             }
+            if let Some(err) = cause.downcast_current_context::<IdeviceError>() {
+                match err {
+                    IdeviceError::Socket(_) => {
+                        return AppError::DeviceComs(report_str);
+                    }
+                    _ => {}
+                }
+            }
             let cause_str = cause.to_string();
             if cause_str.contains("Not enough available app IDs") {
                 return AppError::NotEnoughAppIds(report_str);

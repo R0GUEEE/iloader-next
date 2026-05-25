@@ -6,16 +6,22 @@ import { Toaster } from "@/components/ui/sonner";
 import PlatformGate from "./PlatformGate.tsx";
 import { StoreProvider } from "./lib/StoreContext.tsx";
 import { LogProvider } from "./LogContext.tsx";
+import { OperationProvider } from "./OperationContext.tsx";
+import { PlatformProvider } from "./PlatformContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <PlatformGate>
-      <StoreProvider>
-        <LogProvider>
-          <App />
-          <Toaster expand />
-        </LogProvider>
-      </StoreProvider>
+      <PlatformProvider>
+        <StoreProvider>
+          <LogProvider>
+            <OperationProvider>
+              <App />
+              <Toaster expand />
+            </OperationProvider>
+          </LogProvider>
+        </StoreProvider>
+      </PlatformProvider>
     </PlatformGate>
   </StrictMode>,
 );

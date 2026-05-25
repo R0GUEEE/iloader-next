@@ -94,24 +94,20 @@
   "operation": {
     "failed": "Operation failed.",
     "completed": "Operation completed",
-    "please_wait": "Please wait...",
-    "copy_error_clipboard": "Copy error to clipboard"
+    "please_wait": "Please wait..."
   },
   "operations": {
     "install_sidestore_title": "Installing SideStore",
     "install_sidestore_success_title": "SideStore Installed!",
     "install_sidestore_success_message": "Open SideStore and refresh it to complete the installation!",
     "install_sidestore_step_download": "Download SideStore",
-    "install_sidestore_step_install": "Sign & Install SideStore",
     "install_sidestore_step_pairing": "Place Pairing File",
     "install_livecontainer_title": "Installing LiveContainer+SideStore",
     "install_livecontainer_success_title": "LiveContainer+SideStore Installed!",
     "install_livecontainer_success_message": "To complete the installation, open LiveContainer, choose settings, and click \"Import Certificate From SideStore.\" Then, choose apps, click the sidestore icon, and refresh LiveContainer.",
     "install_livecontainer_step_download": "Download LiveContainer+SideStore",
-    "install_livecontainer_step_install": "Sign & Install LiveContainer+SideStore",
     "install_livecontainer_step_pairing": "Place Pairing File",
-    "sideload_title": "Installing App",
-    "sideload_step_install": "Sign & Install App"
+    "sideload_title": "Installing App"
   },
   "certificates": {
     "manage": "Manage Certificates",
@@ -239,7 +235,8 @@
       ],
       "device_coms": [
         "Ensure your device is properly connected to your computer.",
-        "Unplug and reconnect the device. If the issue persists, try a different USB port and cable."
+        "Unplug and reconnect the device. If the issue persists, try a different USB port and cable.",
+        "[platform::web]Close the browser, unplug and reconnect the device, then open the browser again and try again."
       ],
       "not_logged_in": ["Sign in to your Apple ID first."],
       "no_device_selected": ["Select a device before continuing."],
@@ -291,6 +288,21 @@
     },
     "settings": {
       "logs_description": "View application logs"
+    },
+    "install": {
+      "title": "3. Install",
+      "description": "Install SideStore on your device",
+      "variant_description": "SideStore Variant",
+      "variant_hint": "Only change this if you know what you're doing",
+      "install_button": "Install SideStore"
+    },
+    "operations": {
+      "install_sidestore_step_sign": "Sign SideStore",
+      "install_sidestore_step_install": "Install SideStore",
+      "install_livecontainer_step_sign": "Sign LiveContainer+SideStore",
+      "install_livecontainer_step_install": "Install LiveContainer+SideStore",
+      "sideload_step_sign": "Sign App",
+      "sideload_step_install": "Install App"
     }
   }
 }

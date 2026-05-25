@@ -22,6 +22,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import type { AccountInfo } from "@/lib/client";
+import { LogIn, LogOut } from "lucide-react";
 
 function Account() {
   const [email, setEmail] = useState("");
@@ -127,6 +128,7 @@ function Account() {
                   alert("todo");
                 }}
               >
+                <LogOut />
                 {t("apple_id.sign_out")}
               </Button>
             </CardFooter>
@@ -188,6 +190,7 @@ function Account() {
             </CardContent>
             <CardFooter>
               <Button type="submit" className="w-fit">
+                <LogIn />
                 {t("apple_id.login")}
               </Button>
             </CardFooter>

@@ -32,6 +32,12 @@ import { Trans, useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { LogLevel, useLogs } from "@/LogContext";
 import { Virtuoso } from "react-virtuoso";
+import {
+  FileClock,
+  IdCard,
+  MonitorSmartphone,
+  TicketCheck,
+} from "lucide-react";
 
 function Settings() {
   const [lang, setLang] = useStore<string>("lang", "en");
@@ -100,7 +106,7 @@ function Settings() {
                       )
                     }
                     role="link"
-                    className="underline cursor-pointer"
+                    className="underline cursor-pointer text-primary"
                   />
                 ),
               }}
@@ -109,20 +115,26 @@ function Settings() {
         </Field>
       </CardContent>
       <CardFooter className="flex gap-2 flex-wrap">
-        <Button onClick={() => toast("Not implemented yet")}>
+        <Button variant="outline" onClick={() => toast("Not implemented yet")}>
+          <TicketCheck />
           {t("certificates.manage")}
         </Button>
-        <Button onClick={() => toast("Not implemented yet")}>
+        <Button variant="outline" onClick={() => toast("Not implemented yet")}>
+          <IdCard />
           {t("app_ids.manage")}
         </Button>
-        <Button onClick={() => toast("Not implemented yet")}>
+        <Button variant="outline" onClick={() => toast("Not implemented yet")}>
+          <MonitorSmartphone />
           {t("pairing.manage")}
         </Button>
         <Dialog>
           <DialogTrigger asChild>
-            <Button>{t("settings.view_logs")}</Button>
+            <Button variant="outline">
+              <FileClock />
+              {t("settings.view_logs")}
+            </Button>
           </DialogTrigger>
-          <DialogContent className="min-w-[min(90vw,1000px)] min-h-[85vh] md:min-h-[65vh] flex flex-col">
+          <DialogContent className="min-w-[min(90vw,1600px)] h-[85vh] md:h-[70vh] flex flex-col">
             <DialogHeader>
               <DialogTitle>{t("settings.logs")}</DialogTitle>
               <DialogDescription>
@@ -150,30 +162,32 @@ function Settings() {
                   </SelectContent>
                 </Select>
               </Field>
-              {filteredLogs.length > 0 ? (
-                <Virtuoso
-                  className="bg-black/80 font-mono rounded-sm border border-border mt-4 grow h-full select-text whitespace-nowrap"
-                  data={filteredLogs}
-                  followOutput="smooth"
-                  initialTopMostItemIndex={filteredLogs.length - 1}
-                  itemContent={(_index, log) => (
-                    <div>
-                      <span className="text-gray-600">[{log.timestamp}]</span>{" "}
-                      {getHtmlForLevel(log.level)}{" "}
-                      {log.target ? (
-                        <span className="text-gray-400">{log.target}</span>
-                      ) : (
-                        ""
-                      )}{" "}
-                      {log.message}
-                    </div>
-                  )}
-                />
-              ) : (
-                <pre className="bg-black/80 font-mono rounded-sm border border-border mt-4 grow h-full select-text whitespace-nowrap">
-                  <div>{t("settings.no_logs_yet")}</div>
-                </pre>
-              )}
+              <div className="bg-black/80 font-mono rounded-sm border border-border mt-4 grow h-full p-1">
+                {filteredLogs.length > 0 ? (
+                  <Virtuoso
+                    className="select-text whitespace-nowrap"
+                    data={filteredLogs}
+                    followOutput="smooth"
+                    initialTopMostItemIndex={filteredLogs.length - 1}
+                    itemContent={(_index, log) => (
+                      <div>
+                        <span className="text-gray-600">[{log.timestamp}]</span>{" "}
+                        {getHtmlForLevel(log.level)}{" "}
+                        {log.target ? (
+                          <span className="text-gray-400">{log.target}</span>
+                        ) : (
+                          ""
+                        )}{" "}
+                        {log.message}
+                      </div>
+                    )}
+                  />
+                ) : (
+                  <pre className="select-text whitespace-nowrap">
+                    <div>{t("settings.no_logs_yet")}</div>
+                  </pre>
+                )}
+              </div>
             </div>
           </DialogContent>
         </Dialog>

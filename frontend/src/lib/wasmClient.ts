@@ -1,9 +1,9 @@
 import initWasm, {
-  read_lockdown,
   get_devices,
   login,
   logged_in_as,
-  install_app,
+  install_app_operation,
+  install_sidestore_operation,
 } from "iloader-wasm";
 import type { AccountInfo, DeviceInfo, iloaderAPI } from "./client";
 
@@ -14,10 +14,6 @@ export const wasmClient: iloaderAPI = {
 
   async getDevices(): Promise<DeviceInfo[]> {
     return get_devices();
-  },
-
-  async readLockdown(): Promise<string> {
-    return read_lockdown();
   },
 
   async openUrl(url: string): Promise<void> {
@@ -41,9 +37,6 @@ export const wasmClient: iloaderAPI = {
       resolve(result);
     });
   },
-  installApp: function (): Promise<void> {
-    return install_app();
-  },
   listen: function <T>(
     event: string,
     callback: (data: T) => void,
@@ -59,5 +52,14 @@ export const wasmClient: iloaderAPI = {
         window.removeEventListener(event, handler as EventListener),
       );
     });
+  },
+  installAppOperation: function (): Promise<void> {
+    return install_app_operation();
+  },
+  installSidestoreOperation: function (
+    nightly: boolean,
+    livecontainer: boolean,
+  ): Promise<void> {
+    return install_sidestore_operation(nightly, livecontainer);
   },
 };

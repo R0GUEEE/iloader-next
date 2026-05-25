@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import type { DeviceInfo } from "@/lib/client";
 import { client } from "@/App";
-import { CheckIcon, TabletSmartphone } from "lucide-react";
+import { CheckIcon, RefreshCw, TabletSmartphone } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -94,6 +94,7 @@ function Devices() {
             }
           }}
         >
+          <RefreshCw />
           {t("common.refresh")}
         </Button>
       </CardFooter>

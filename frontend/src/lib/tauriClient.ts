@@ -26,10 +26,6 @@ export const tauriClient: iloaderAPI = {
     return validDevices;
   },
 
-  async readLockdown(): Promise<string> {
-    return invoke("read_lockdown");
-  },
-
   async openUrl(url: string): Promise<void> {
     return openUrl(url);
   },
@@ -60,9 +56,6 @@ export const tauriClient: iloaderAPI = {
     console.log("Logged in as:", account);
     return account;
   },
-  installApp: function (): Promise<void> {
-    throw new Error("Function not implemented.");
-  },
   listen: function <T>(
     event: string,
     callback: (data: T) => void,
@@ -73,5 +66,14 @@ export const tauriClient: iloaderAPI = {
       });
       resolve(unlisten);
     });
+  },
+  installSidestoreOperation: function (
+    nightly: boolean,
+    livecontainer: boolean,
+  ): Promise<void> {
+    throw new Error("Function not implemented.");
+  },
+  installAppOperation: function (): Promise<void> {
+    throw new Error("Function not implemented.");
   },
 };

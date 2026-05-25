@@ -3067,6 +3067,7 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "urlencoding",
  "uuid",
  "wasm-bindgen",
  "wasm-bindgen-futures",
@@ -3201,9 +3202,9 @@ checksum = "a6cb138bb79a146c1bd460005623e142ef0181e3d0219cb493e02f7d08a35695"
 
 [[package]]
 name = "isideload"
-version = "0.3.0"
+version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ce642bc0f62c1bb4c5ed369fadb97bfa24be71f9de21b32fd6cb041c9a49c3e9"
+checksum = "76a1fd9cc6e6c94230aa919831c98e74f5fa9a5e5f1d686914cc8a2be7d1c546"
 dependencies = [
  "aes 0.9.0",
  "aes-gcm 0.11.0-rc.3",

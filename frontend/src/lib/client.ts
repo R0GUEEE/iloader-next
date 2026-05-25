@@ -15,16 +15,20 @@ export interface iloaderAPI {
   init(): Promise<void>;
   openUrl(url: string): Promise<void>;
   getDevices(): Promise<DeviceInfo[]>;
-  readLockdown(): Promise<string>;
   login(
     email: string,
     password: string,
     get2FA: () => Promise<string>,
   ): Promise<void>;
   logged_in_as(): Promise<AccountInfo | null>;
-  installApp(): Promise<void>;
 
   listen<T>(event: string, callback: (data: T) => void): Promise<() => void>;
+
+  installSidestoreOperation(
+    nightly: boolean,
+    livecontainer: boolean,
+  ): Promise<void>;
+  installAppOperation(): Promise<void>;
 }
 
 let clientInstance: iloaderAPI | null = null;
